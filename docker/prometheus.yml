@@ -1,0 +1,28 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: api-gateway
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['api-gateway:8080']
+
+  - job_name: user-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['user-service:8082']
+
+  - job_name: resource-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['resource-service:8083']
+
+  - job_name: allocation-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['allocation-service:8084']
+
+  - job_name: schedule-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['schedule-service:8085']

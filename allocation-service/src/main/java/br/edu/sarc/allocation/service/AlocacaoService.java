@@ -16,6 +16,8 @@ import br.edu.sarc.allocation.repository.RecursoRepository;
 import br.edu.sarc.allocation.repository.UsuarioRepository;
 import br.edu.sarc.allocation.security.CurrentUser;
 import br.edu.sarc.allocation.security.CurrentUserProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +29,8 @@ import java.util.Set;
 
 @Service
 public class AlocacaoService {
+
+    private static final Logger log = LoggerFactory.getLogger(AlocacaoService.class);
 
     private final AlocacaoRepository alocacaoRepository;
     private final UsuarioRepository usuarioRepository;
@@ -89,7 +93,10 @@ public class AlocacaoService {
                 recursos
         );
 
-        return AlocacaoMapper.toResponse(alocacaoRepository.save(alocacao));
+        Alocacao salva = alocacaoRepository.save(alocacao);
+        log.info("Alocacao criada: id={}, professor={}, data={}, recursos={}",
+                salva.getId(), professor.getEmail(), request.data(), request.recursoIds());
+        return AlocacaoMapper.toResponse(salva);
     }
 
     @Transactional
@@ -168,6 +175,7 @@ public class AlocacaoService {
                 .filter(recurso -> !recurso.isAtivo())
                 .findFirst()
                 .ifPresent(recurso -> {
+                    log.warn("Tentativa de alocar recurso inativo: id={}, nome={}", recurso.getId(), recurso.getNome());
                     throw new BusinessException("Recurso inativo nao pode ser alocado: " + recurso.getId());
                 });
 
@@ -182,6 +190,7 @@ public class AlocacaoService {
 
     private void validarConflito(Long alocacaoIdIgnorada, LocalDate data, LocalTime inicio, LocalTime fim, List<Long> recursoIds) {
         if (alocacaoRepository.existeConflito(data, inicio, fim, recursoIds.stream().distinct().toList(), alocacaoIdIgnorada)) {
+            log.warn("Conflito de horario detectado: data={}, inicio={}, fim={}, recursos={}", data, inicio, fim, recursoIds);
             throw new BusinessException("Ja existe alocacao para o mesmo recurso, data e horario sobreposto");
         }
     }

@@ -176,6 +176,34 @@ services:
       - "4317:4317"
       - "4318:4318"
 
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: sarc-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./docker/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      - api-gateway
+      - user-service
+      - resource-service
+      - allocation-service
+      - schedule-service
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: sarc-grafana
+    ports:
+      - "3001:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning:ro
+      - sarc-grafana-data:/var/lib/grafana
+    depends_on:
+      - prometheus
+
   # SonarQube opcional:
   # sonarqube:
   #   image: sonarqube:10-community
@@ -187,3 +215,4 @@ services:
 
 volumes:
   sarc-postgres-data:
+  sarc-grafana-data:
