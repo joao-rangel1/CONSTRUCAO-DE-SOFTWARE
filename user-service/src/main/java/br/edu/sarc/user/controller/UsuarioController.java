@@ -25,6 +25,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
@@ -68,8 +71,10 @@ public class UsuarioController {
             @ApiResponse(responseCode = "401", description = "Nao autenticado", content = @Content),
             @ApiResponse(responseCode = "403", description = "Acesso negado", content = @Content)
     })
-    public List<UsuarioResponse> listarTodos() {
-        return usuarioService.listarTodos();
+    public Page<UsuarioResponse> listarTodos(
+            @PageableDefault(size = 20, sort = "nome") Pageable pageable
+    ) {
+        return usuarioService.listarTodos(pageable);
     }
 
     @GetMapping("/{id}")

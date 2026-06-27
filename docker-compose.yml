@@ -4,7 +4,7 @@ services:
     container_name: sarc-postgres
     environment:
       POSTGRES_USER: sarc
-      POSTGRES_PASSWORD: sarc
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-sarc}
       POSTGRES_DB: sarc
     ports:
       - "5432:5432"
@@ -13,7 +13,7 @@ services:
       - ./database/01_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
       - ./database/02_seed.sql:/docker-entrypoint-initdb.d/02_seed.sql:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U sarc -d sarc"]
+      test: ["CMD-SHELL", "pg_isready -U sarc -d sarc -q"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -24,7 +24,7 @@ services:
     command: start-dev --import-realm --hostname=http://localhost:8090
     environment:
       KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
       KC_HTTP_PORT: 8080
     ports:
       - "8090:8080"
@@ -176,6 +176,34 @@ services:
       - "4317:4317"
       - "4318:4318"
 
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: sarc-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./docker/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      - api-gateway
+      - user-service
+      - resource-service
+      - allocation-service
+      - schedule-service
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: sarc-grafana
+    ports:
+      - "3001:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning:ro
+      - sarc-grafana-data:/var/lib/grafana
+    depends_on:
+      - prometheus
+
   # SonarQube opcional:
   # sonarqube:
   #   image: sonarqube:10-community
@@ -187,3 +215,4 @@ services:
 
 volumes:
   sarc-postgres-data:
+  sarc-grafana-data:

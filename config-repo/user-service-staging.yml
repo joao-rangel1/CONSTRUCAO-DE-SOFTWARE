@@ -1,0 +1,17 @@
+# Perfil staging do user-service — ativado via SPRING_PROFILES_ACTIVE=staging
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate    # valida schema sem modificar
+    show-sql: false
+  flyway:
+    out-of-order: false
+    validate-on-migrate: true
+
+logging:
+  level:
+    br.edu.sarc: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE

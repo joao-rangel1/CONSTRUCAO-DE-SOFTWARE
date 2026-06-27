@@ -4,17 +4,20 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.Immutable;
 
+/**
+ * Projeção somente-leitura do usuário gerenciado pelo user-service (schema sarc_users).
+ * O schedule-service NÃO gerencia nem altera dados de usuário.
+ */
 @Entity
-@Table(name = "usuario")
+@Immutable
+@Table(name = "usuario", schema = "sarc_users")
 public class Usuario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, length = 120)

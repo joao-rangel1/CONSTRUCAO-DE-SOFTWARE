@@ -1,0 +1,108 @@
+name: Production — Build e Deploy
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-push:
+    name: Build dos Serviços e Deploy em Produção
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Extrair versão da tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Configurar Java 21 (LTS)
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Executar testes antes do deploy em producao
+        run: mvn -pl user-service,resource-service,allocation-service,schedule-service test -B
+
+      - name: Empacotar serviços
+        run: mvn -pl user-service,resource-service,allocation-service,schedule-service package -DskipTests -B
+
+      - name: Configurar Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Normalizar owner para minúsculo
+        id: owner
+        run: echo "value=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
+      - name: Login no GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build e push — user-service
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: user-service/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ steps.owner.outputs.value }}/sarc-user-service:latest
+            ghcr.io/${{ steps.owner.outputs.value }}/sarc-user-service:${{ steps.version.outputs.VERSION }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build e push — resource-service
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: resource-service/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ steps.owner.outputs.value }}/sarc-resource-service:latest
+            ghcr.io/${{ steps.owner.outputs.value }}/sarc-resource-service:${{ steps.version.outputs.VERSION }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build e push — allocation-service
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: allocation-service/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ steps.owner.outputs.value }}/sarc-allocation-service:latest
+            ghcr.io/${{ steps.owner.outputs.value }}/sarc-allocation-service:${{ steps.version.outputs.VERSION }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build e push — schedule-service
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: schedule-service/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ steps.owner.outputs.value }}/sarc-schedule-service:latest
+            ghcr.io/${{ steps.owner.outputs.value }}/sarc-schedule-service:${{ steps.version.outputs.VERSION }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Resumo do deploy
+        run: |
+          echo "## 🚀 Deploy de Produção Concluído" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Versão:** ${{ steps.version.outputs.VERSION }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Serviço | Imagem |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "| user-service | \`ghcr.io/${{ steps.owner.outputs.value }}/sarc-user-service:${{ steps.version.outputs.VERSION }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| resource-service | \`ghcr.io/${{ steps.owner.outputs.value }}/sarc-resource-service:${{ steps.version.outputs.VERSION }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| allocation-service | \`ghcr.io/${{ steps.owner.outputs.value }}/sarc-allocation-service:${{ steps.version.outputs.VERSION }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| schedule-service | \`ghcr.io/${{ steps.owner.outputs.value }}/sarc-schedule-service:${{ steps.version.outputs.VERSION }}\` |" >> $GITHUB_STEP_SUMMARY

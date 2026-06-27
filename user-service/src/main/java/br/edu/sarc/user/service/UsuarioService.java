@@ -9,6 +9,8 @@ import br.edu.sarc.user.exception.DuplicateEmailException;
 import br.edu.sarc.user.exception.UsuarioNotFoundException;
 import br.edu.sarc.user.mapper.UsuarioMapper;
 import br.edu.sarc.user.repository.UsuarioRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,11 +37,9 @@ public class UsuarioService {
     }
 
     @Transactional(readOnly = true)
-    public List<UsuarioResponse> listarTodos() {
-        return usuarioRepository.findAll()
-                .stream()
-                .map(UsuarioMapper::toResponse)
-                .toList();
+    public Page<UsuarioResponse> listarTodos(Pageable pageable) {
+        return usuarioRepository.findAll(pageable)
+                .map(UsuarioMapper::toResponse);
     }
 
     @Transactional(readOnly = true)

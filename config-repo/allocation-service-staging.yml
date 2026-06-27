@@ -1,0 +1,16 @@
+# Perfil staging do allocation-service — ativado via SPRING_PROFILES_ACTIVE=staging
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+  flyway:
+    out-of-order: false
+    validate-on-migrate: true
+
+logging:
+  level:
+    br.edu.sarc: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG

@@ -2,19 +2,24 @@ spring:
   application:
     name: schedule-service
   datasource:
-    url: jdbc:postgresql://postgres:5432/sarc
-    username: sarc
-    password: sarc
+    url: jdbc:postgresql://${DB_HOST:postgres}:${DB_PORT:5432}/${DB_NAME:sarc}?currentSchema=sarc_schedules
+    username: ${DB_USER:sarc}
+    password: ${DB_PASSWORD:sarc}
   jpa:
     hibernate:
       ddl-auto: none
     open-in-view: false
+    properties:
+      hibernate:
+        default_schema: sarc_schedules
+  flyway:
+    enabled: false  # schedule-service usa views (criadas pelo 01_schema.sql), sem migrações próprias
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8090/realms/sarc
-          jwk-set-uri: http://keycloak:8080/realms/sarc/protocol/openid-connect/certs
+          issuer-uri: ${KEYCLOAK_EXTERNAL_URL:http://localhost:8090}/realms/sarc
+          jwk-set-uri: ${KEYCLOAK_INTERNAL_URL:http://keycloak:8080}/realms/sarc/protocol/openid-connect/certs
 
 server:
   port: 8085

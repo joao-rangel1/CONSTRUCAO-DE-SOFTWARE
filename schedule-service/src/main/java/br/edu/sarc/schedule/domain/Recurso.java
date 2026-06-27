@@ -4,17 +4,20 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.Immutable;
 
+/**
+ * Projeção somente-leitura do recurso gerenciado pelo resource-service (schema sarc_resources).
+ * O schedule-service NÃO gerencia nem altera dados de recurso.
+ */
 @Entity
-@Table(name = "recurso")
+@Immutable
+@Table(name = "recurso", schema = "sarc_resources")
 public class Recurso {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, length = 100)

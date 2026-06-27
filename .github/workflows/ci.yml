@@ -24,19 +24,30 @@ jobs:
 
       - name: Compilar e executar testes — user-service
         run: mvn -pl user-service test -B
-        working-directory: ${{ github.workspace }}
 
       - name: Compilar e executar testes — resource-service
         run: mvn -pl resource-service test -B
-        working-directory: ${{ github.workspace }}
 
       - name: Compilar e executar testes — allocation-service
         run: mvn -pl allocation-service test -B
-        working-directory: ${{ github.workspace }}
+
+      - name: Compilar e executar testes — schedule-service
+        run: mvn -pl schedule-service test -B
 
       - name: Gerar relatórios de cobertura JaCoCo
         run: mvn -pl user-service,resource-service,allocation-service verify -DskipTests -B
-        working-directory: ${{ github.workspace }}
+
+      - name: Scan de vulnerabilidades OWASP — user-service
+        run: mvn -pl user-service org.owasp:dependency-check-maven:check -B
+        continue-on-error: true
+
+      - name: Scan de vulnerabilidades OWASP — resource-service
+        run: mvn -pl resource-service org.owasp:dependency-check-maven:check -B
+        continue-on-error: true
+
+      - name: Scan de vulnerabilidades OWASP — allocation-service
+        run: mvn -pl allocation-service org.owasp:dependency-check-maven:check -B
+        continue-on-error: true
 
       - name: Upload relatório JaCoCo — user-service
         uses: actions/upload-artifact@v4
@@ -68,3 +79,4 @@ jobs:
             user-service/target/surefire-reports/
             resource-service/target/surefire-reports/
             allocation-service/target/surefire-reports/
+            schedule-service/target/surefire-reports/

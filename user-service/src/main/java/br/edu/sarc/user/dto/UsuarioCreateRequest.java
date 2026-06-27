@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 @Schema(description = "Dados para criacao de usuario interno do SARC")
@@ -21,8 +22,12 @@ public record UsuarioCreateRequest(
         String email,
 
         @NotBlank
-        @Size(min = 6, max = 100)
-        @Schema(description = "Senha inicial. A API armazena apenas o hash.", example = "123456")
+        @Size(min = 8, max = 100)
+        @Pattern(
+                regexp = "^(?=.*[A-Z])(?=.*[0-9]).{8,}$",
+                message = "A senha deve ter no minimo 8 caracteres, uma letra maiuscula e um numero"
+        )
+        @Schema(description = "Senha inicial. A API armazena apenas o hash.", example = "Sarc@2024")
         String senha,
 
         @NotNull
