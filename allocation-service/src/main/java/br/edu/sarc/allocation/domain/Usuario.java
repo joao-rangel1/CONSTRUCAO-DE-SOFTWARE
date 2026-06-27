@@ -4,17 +4,21 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.Immutable;
 
+/**
+ * Projeção somente-leitura do usuário gerenciado pelo user-service (schema sarc_users).
+ * O allocation-service NÃO gerencia este dado — apenas o lê para associar professor às alocações.
+ * Alterações no cadastro de usuários devem ser feitas via user-service.
+ */
 @Entity
-@Table(name = "usuario")
+@Immutable
+@Table(name = "usuario", schema = "sarc_users")
 public class Usuario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, length = 120)
@@ -28,12 +32,6 @@ public class Usuario {
     private PerfilUsuario perfil;
 
     protected Usuario() {
-    }
-
-    public Usuario(String nome, String email, PerfilUsuario perfil) {
-        this.nome = nome;
-        this.email = email;
-        this.perfil = perfil;
     }
 
     public Long getId() {

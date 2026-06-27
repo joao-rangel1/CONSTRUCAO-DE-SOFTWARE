@@ -8,6 +8,8 @@ import br.edu.sarc.resource.mapper.RecursoMapper;
 import br.edu.sarc.resource.repository.RecursoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,11 +43,9 @@ public class RecursoService {
     }
 
     @Transactional(readOnly = true)
-    public List<RecursoResponse> listarTodos() {
-        return recursoRepository.findAll()
-                .stream()
-                .map(RecursoMapper::toResponse)
-                .toList();
+    public Page<RecursoResponse> listarTodos(Pageable pageable) {
+        return recursoRepository.findAll(pageable)
+                .map(RecursoMapper::toResponse);
     }
 
     @Transactional(readOnly = true)

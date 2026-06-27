@@ -1,0 +1,7 @@
+# Perfil de producao — sobrescreve valores padrao de application.yml
+# Ativado via SPRING_PROFILES_ACTIVE=production
+
+management:
+  tracing:
+    sampling:
+      probability: 0.1

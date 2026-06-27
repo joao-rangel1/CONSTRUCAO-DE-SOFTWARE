@@ -1,6 +1,7 @@
 package br.edu.sarc.allocation.repository;
 
 import br.edu.sarc.allocation.domain.Alocacao;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,8 +12,10 @@ import java.util.List;
 
 public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
 
+    @EntityGraph(attributePaths = {"professor", "recursos"})
     List<Alocacao> findByProfessorIdOrderByDataAscHorarioInicioAsc(Long professorId);
 
+    @EntityGraph(attributePaths = {"professor", "recursos"})
     @Query("""
             select distinct a from Alocacao a
             join a.professor p
@@ -28,6 +31,7 @@ public interface AlocacaoRepository extends JpaRepository<Alocacao, Long> {
             @Param("recursoId") Long recursoId
     );
 
+    @EntityGraph(attributePaths = {"professor", "recursos"})
     @Query("""
             select distinct a from Alocacao a
             join a.professor p

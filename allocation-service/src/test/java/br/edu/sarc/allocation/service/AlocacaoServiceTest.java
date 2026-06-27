@@ -30,6 +30,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -128,6 +130,19 @@ class AlocacaoServiceTest {
         verify(usuarioRepository, never()).findByEmail("admin@sarc.local");
     }
 
+    @Test
+    void criacaoComProfessorIdNullDeveUsarProfessorDoToken() {
+        when(currentUserProvider.get()).thenReturn(new CurrentUser("professor@sarc.local", false, true));
+        when(usuarioRepository.findByEmail("professor@sarc.local")).thenReturn(Optional.of(professor));
+        when(recursoRepository.findByIdIn(List.of(10L))).thenReturn(List.of(laboratorio));
+        when(alocacaoRepository.existeConflito(eq(LocalDate.now().plusDays(1)), eq(LocalTime.of(8, 0)), eq(LocalTime.of(10, 0)), eq(List.of(10L)), eq(null))).thenReturn(false);
+        when(alocacaoRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        var response = service.criar(request(null, List.of(10L), LocalTime.of(8, 0), LocalTime.of(10, 0)));
+
+        assertThat(response.professor()).isEqualTo("Professor Teste");
+    }
+
     private AlocacaoRequest request(Long professorId, List<Long> recursoIds, LocalTime inicio, LocalTime fim) {
         return new AlocacaoRequest(
                 professorId,
@@ -152,15 +167,31 @@ class AlocacaoServiceTest {
         return alocacao;
     }
 
+    /**
+     * Cria um mock de Usuario (@Immutable — sem construtor público).
+     * lenient() evita UnnecessaryStubbingException quando nem todos os getters
+     * são usados em cada teste individual.
+     */
     private Usuario usuario(Long id, String nome, String email, PerfilUsuario perfil) {
-        Usuario usuario = new Usuario(nome, email, perfil);
-        ReflectionTestUtils.setField(usuario, "id", id);
+        Usuario usuario = mock(Usuario.class);
+        lenient().when(usuario.getId()).thenReturn(id);
+        lenient().when(usuario.getNome()).thenReturn(nome);
+        lenient().when(usuario.getEmail()).thenReturn(email);
+        lenient().when(usuario.getPerfil()).thenReturn(perfil);
         return usuario;
     }
 
+    /**
+     * Cria um mock de Recurso (@Immutable — sem construtor público).
+     * lenient() evita UnnecessaryStubbingException quando nem todos os getters
+     * são usados em cada teste individual.
+     */
     private Recurso recurso(Long id, String nome, TipoRecurso tipo, boolean ativo) {
-        Recurso recurso = new Recurso(nome, tipo, "Predio 32", ativo);
-        ReflectionTestUtils.setField(recurso, "id", id);
+        Recurso recurso = mock(Recurso.class);
+        lenient().when(recurso.getId()).thenReturn(id);
+        lenient().when(recurso.getNome()).thenReturn(nome);
+        lenient().when(recurso.getTipo()).thenReturn(tipo);
+        lenient().when(recurso.isAtivo()).thenReturn(ativo);
         return recurso;
     }
 }

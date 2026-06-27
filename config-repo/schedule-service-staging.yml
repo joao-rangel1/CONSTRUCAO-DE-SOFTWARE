@@ -1,0 +1,12 @@
+# Perfil staging do schedule-service — ativado via SPRING_PROFILES_ACTIVE=staging
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none      # schedule-service usa views, sem gerenciamento de schema
+
+logging:
+  level:
+    br.edu.sarc: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG

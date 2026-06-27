@@ -34,6 +34,11 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.BAD_REQUEST, "Dados da requisicao invalidos", request, fieldErrors);
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGeneric(Exception exception, HttpServletRequest request) {
+        return build(HttpStatus.INTERNAL_SERVER_ERROR, "Erro interno do servidor", request, Map.of());
+    }
+
     private ResponseEntity<ErrorResponse> build(
             HttpStatus status,
             String message,

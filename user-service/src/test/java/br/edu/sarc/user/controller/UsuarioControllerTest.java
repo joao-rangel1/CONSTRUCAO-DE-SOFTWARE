@@ -74,7 +74,7 @@ class UsuarioControllerTest {
                 {
                   "nome": "Novo Professor",
                   "email": "novo.professor@sarc.local",
-                  "senha": "123456",
+                  "senha": "Sarc@2024",
                   "perfil": "PROFESSOR"
                 }
                 """;
