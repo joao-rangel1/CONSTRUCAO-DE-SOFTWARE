@@ -130,6 +130,8 @@ Serviços disponíveis após inicialização:
 | Keycloak | http://localhost:8090 |
 | Eureka | http://localhost:8761 |
 | Config Server | http://localhost:8888 |
+| Prometheus | http://localhost:9090 |
+| Grafana | http://localhost:3001 (admin / admin) |
 
 ### Credenciais de teste
 
@@ -153,6 +155,16 @@ Serviços disponíveis após inicialização:
 | `KEYCLOAK_EXTERNAL_URL` | `http://localhost:8090` | URL externa do Keycloak (acesso do browser) |
 | `CORS_ALLOWED_ORIGIN` | `http://localhost:3000` | Origem permitida no CORS |
 | `TRACING_PROBABILITY` | `1.0` | Sampling do OpenTelemetry (usar 0.1 em prod) |
+
+## Observabilidade
+
+A plataforma combina **tracing distribuído** e **métricas**:
+
+- **Tracing** — cada serviço exporta spans via OpenTelemetry (OTLP) para o `otel-collector` (`:4318`).
+- **Métricas** — cada serviço expõe `/actuator/prometheus` via Micrometer; o **Prometheus** (`:9090`) coleta e o **Grafana** (`:3001`) visualiza.
+- **Logs estruturados** — cada serviço registra eventos de domínio e startup em formato estruturado (SLF4J).
+
+Detalhes de implementação e dashboards em [`docs/OBSERVABILIDADE_IMPLEMENTADO.md`](docs/OBSERVABILIDADE_IMPLEMENTADO.md) e melhorias planejadas em [`docs/OBSERVABILIDADE_MELHORIAS.md`](docs/OBSERVABILIDADE_MELHORIAS.md).
 
 ## Processo de Desenvolvimento com IA (SDD)
 
