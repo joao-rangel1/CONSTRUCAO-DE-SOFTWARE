@@ -2,7 +2,11 @@ name: Staging — Build e Deploy
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
+
+permissions:
+  contents: read
+  packages: write
 
 jobs:
   build-and-push:
