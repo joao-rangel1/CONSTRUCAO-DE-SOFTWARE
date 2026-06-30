@@ -108,6 +108,12 @@ erDiagram
 
 ## Execucao Local com Docker
 
+### Opção rápida (Windows)
+
+Dê dois cliques em `start.bat` na raiz do projeto. O script verifica o Docker, cria o `.env` automaticamente se necessário e sobe todos os serviços. Para encerrar, execute `stop.bat`.
+
+### Opção manual
+
 Copie o arquivo de exemplo de variáveis de ambiente:
 
 ```bash
