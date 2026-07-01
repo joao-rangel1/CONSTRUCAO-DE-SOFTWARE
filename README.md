@@ -1,3 +1,8 @@
+PODE SÓ EXECUTAR O START.BAT
+
+
+
+
 # SARC Arquitetura Projeto
 
 Monorepo base para a revitalizacao do SARC, uma plataforma institucional para consulta e alocacao de salas, laboratorios e recursos computacionais em datas e horarios especificos.
