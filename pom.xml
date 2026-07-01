@@ -12,6 +12,7 @@
     <description>Monorepo da revitalizacao do SARC</description>
 
     <modules>
+        <module>common-lib</module>
         <module>discovery-server</module>
         <module>config-server</module>
         <module>api-gateway</module>
@@ -27,7 +28,7 @@
         <spring-cloud.version>2023.0.3</spring-cloud.version>
         <springdoc.version>2.6.0</springdoc.version>
         <jacoco.version>0.8.12</jacoco.version>
-        <flyway.version>10.15.0</flyway.version>
+        <flyway.version>10.22.0</flyway.version>
         <!-- Garante que argLine nao seja vazio quando JaCoCo nao esta ativo -->
         <argLine>-Dnet.bytebuddy.experimental=true</argLine>
     </properties>

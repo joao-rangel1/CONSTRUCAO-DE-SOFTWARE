@@ -3,7 +3,7 @@ package br.edu.sarc.allocation.controller;
 import br.edu.sarc.allocation.dto.AlocacaoPublicResponse;
 import br.edu.sarc.allocation.dto.AlocacaoRequest;
 import br.edu.sarc.allocation.dto.AlocacaoResponse;
-import br.edu.sarc.allocation.dto.ErrorResponse;
+import br.edu.sarc.common.dto.ErrorResponse;
 import br.edu.sarc.allocation.service.AlocacaoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

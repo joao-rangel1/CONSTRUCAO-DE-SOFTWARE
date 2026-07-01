@@ -100,8 +100,9 @@ export const api = {
     }
   },
   resources: {
-    list() {
-      return request<Resource[]>('/api/resources');
+    async list() {
+      const page = await request<{ content: Resource[] }>('/api/resources?size=100');
+      return page.content;
     },
     publicList() {
       return request<ResourceFilter[]>('/api/resources/public');

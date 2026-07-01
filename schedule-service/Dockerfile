@@ -5,6 +5,7 @@ WORKDIR /workspace
 
 # 1. Copia apenas os pom.xml para aproveitar o cache de dependências
 COPY pom.xml .
+COPY common-lib/pom.xml common-lib/
 COPY user-service/pom.xml user-service/
 COPY resource-service/pom.xml resource-service/
 COPY allocation-service/pom.xml allocation-service/

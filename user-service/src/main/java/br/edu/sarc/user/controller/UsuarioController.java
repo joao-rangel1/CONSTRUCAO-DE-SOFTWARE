@@ -1,6 +1,6 @@
 package br.edu.sarc.user.controller;
 
-import br.edu.sarc.user.dto.ErrorResponse;
+import br.edu.sarc.common.dto.ErrorResponse;
 import br.edu.sarc.user.dto.UsuarioCreateRequest;
 import br.edu.sarc.user.dto.UsuarioResponse;
 import br.edu.sarc.user.dto.UsuarioUpdateRequest;

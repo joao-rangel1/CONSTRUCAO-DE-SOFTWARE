@@ -1,4 +1,4 @@
-package br.edu.sarc.resource.dto;
+package br.edu.sarc.common.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -19,7 +19,7 @@ public record ErrorResponse(
         @Schema(description = "Mensagem legivel do erro", example = "Recurso nao encontrado")
         String message,
 
-        @Schema(description = "Caminho da requisicao", example = "/api/resources/1")
+        @Schema(description = "Caminho da requisicao", example = "/api/recursos/1")
         String path,
 
         @Schema(description = "Erros de validacao por campo")

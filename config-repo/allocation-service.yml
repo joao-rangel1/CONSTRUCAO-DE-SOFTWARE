@@ -16,6 +16,8 @@ spring:
     enabled: true
     schemas: sarc_allocations
     locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 0
   security:
     oauth2:
       resourceserver:

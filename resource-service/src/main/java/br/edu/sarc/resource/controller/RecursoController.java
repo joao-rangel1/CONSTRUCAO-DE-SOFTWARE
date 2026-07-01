@@ -1,6 +1,6 @@
 package br.edu.sarc.resource.controller;
 
-import br.edu.sarc.resource.dto.ErrorResponse;
+import br.edu.sarc.common.dto.ErrorResponse;
 import br.edu.sarc.resource.dto.RecursoRequest;
 import br.edu.sarc.resource.dto.RecursoResponse;
 import br.edu.sarc.resource.service.RecursoService;
